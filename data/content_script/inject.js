@@ -31,7 +31,8 @@ var background = (function () {
 
 var config = {
   "update": function (e) {
-    if (e.state === "enabled") {
+    // Don't inject scripts if URL is excluded or if state is disabled
+    if (e.state === "enabled" && !e.excluded) {
       const script = {};
       /*  */
       if (e.devices) {
@@ -75,6 +76,19 @@ var config = {
           document.documentElement.appendChild(script.c);
         }
       }
+    } else {
+      // Remove existing scripts if URL is excluded or disabled
+      const existingScripts = [
+        document.getElementById("webrtc-control-a"),
+        document.getElementById("webrtc-control-b"),
+        document.getElementById("webrtc-control-c")
+      ];
+      
+      existingScripts.forEach(function(script) {
+        if (script) {
+          script.remove();
+        }
+      });
     }
   }
 };
